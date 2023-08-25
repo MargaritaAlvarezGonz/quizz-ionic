@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "question": "SACO es a ASCO lo que 7683 es a...",
+      "answer": "6783",
+      "help": "S = 6, A = 7, c= 8, O = 3. Respuesta correcta: 6783"
+    },
+
+    {
+      "question": "¿Qué grupo continúa en la siguiente serie: 2Z3, 4Y6, 6X9 ...?",
+      "answer": "8W12",
+      "help": "En el primer número se suma 2. En la segunda letra se resta 1. El el tercer número se suman 3. Respuesta correcta: 8W12"
+    },
+    {
+      "question": "Calcula la suma de 1578 + 285",
+      "answer": "1863",
+      "help": ". Respuesta correcta: 1863"
+    }
+
+
+  ]
+}

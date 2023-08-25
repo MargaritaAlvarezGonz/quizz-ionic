@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -7,6 +8,14 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  constructor() {}
+  constructor(
+    public router: Router
+  ) {}
+
+
+  //Función para hacer el clikc en los botones y que nos lleve a la página
+  start(){
+    this.router.navigate(["/game"]) //aqui me salía un error del router, y es porque hay que iniciarlizaarlo en el constructor
+  }
 
 }
