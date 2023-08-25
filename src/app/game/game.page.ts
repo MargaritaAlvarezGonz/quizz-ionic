@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../service/api.service';
+import { FormBuilder, FormGroup,  Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+
 
 
 @Component({
@@ -13,16 +17,20 @@ export class GamePage implements OnInit {
   questiontitle: any;
   questionAnswer: any;
   heplAnswer: any;
-
   //inicializamos en 0 las respuestas, pero necesitamos que vayan cambiando, por lo que vamos a hacer una variable que se llama questionNumber
-
   questionNumber: any;
+  formSendAnswer: FormGroup;
 
 
    //El serviceApi se tiene que inicializar en el constructor y se importa
   constructor(
-    private apiService: ApiService
-  ) { }
+    private apiService: ApiService,
+    public formBuilder: FormBuilder
+  ) {
+    this.formSendAnswer= this.formBuilder.group({
+      answer: ["", Validators.required],
+    });
+  }
 
     //aquí vamos a llamar a las preguntas cuando inicie la aplicacion
   ngOnInit() {
@@ -45,6 +53,20 @@ export class GamePage implements OnInit {
         console.log("error: ", err)
       }
     )
+  }
+
+  sendAnswer(){
+    let value = this.formSendAnswer.value;//con esto se tiene toda la información de formulario con el que enviamos
+    console.log("Respuesta enviada: ", value)
+    if (value.answer ==  this.questionAnswer){
+      console.log("Respuesta correcta")
+    } else {
+      console.log("Respuesta incorrecta")
+    }
+  }
+
+  async presentAlertCorrectAnswer(){
+    
   }
 
 }
