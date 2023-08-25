@@ -3,6 +3,7 @@ import { ApiService } from '../service/api.service';
 import { FormBuilder, FormGroup,  Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
+import { AlertController } from '@ionic/angular';
 
 
 
@@ -14,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 export class GamePage implements OnInit {
 
   questions: any = [];
+  wrongAnswers: any = [];
   questiontitle: any;
   questionAnswer: any;
   heplAnswer: any;
@@ -25,7 +27,8 @@ export class GamePage implements OnInit {
    //El serviceApi se tiene que inicializar en el constructor y se importa
   constructor(
     private apiService: ApiService,
-    public formBuilder: FormBuilder
+    public formBuilder: FormBuilder,
+    public alertController: AlertController
   ) {
     this.formSendAnswer= this.formBuilder.group({
       answer: ["", Validators.required],
@@ -35,6 +38,7 @@ export class GamePage implements OnInit {
     //aquí vamos a llamar a las preguntas cuando inicie la aplicacion
   ngOnInit() {
     this.getQuestions();
+    this.getWrongAnswers();
     this.questionNumber = 0;
 
   }
@@ -55,18 +59,78 @@ export class GamePage implements OnInit {
     )
   }
 
+  getWrongAnswers(){
+    this.apiService.getWrongAnswers().subscribe(
+      (res) => {
+        this.wrongAnswers = res; //nos trae
+
+      }, (err) => {
+        console.log("error: ", err)
+      }
+    )
+  }
+
+  next(){
+    this.questionNumber = ++this.questionNumber;
+    this.getQuestions();
+  }
+
+  help(){
+    this.presentAlertHelp();
+  }
+
+
+  getRandomInt(min, max){
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random()*(max-min +1)) + min;
+  }
+
   sendAnswer(){
     let value = this.formSendAnswer.value;//con esto se tiene toda la información de formulario con el que enviamos
     console.log("Respuesta enviada: ", value)
     if (value.answer ==  this.questionAnswer){
-      console.log("Respuesta correcta")
+
+      this.presentAlertCorrectAnswer();
     } else {
-      console.log("Respuesta incorrecta")
+
+      this.presentAlertWrongAnswer();
     }
   }
 
-  async presentAlertCorrectAnswer(){
-    
+   async presentAlertCorrectAnswer(){
+    const alert = await this.alertController.create({
+      header: "Respuesta correcta",
+      message: "Veremos que tal te va en la siguiente",
+      buttons: ["OK"]
+    });
+    await alert.present();
+    let result = await alert.onDidDismiss();
+    this.next();
   }
+
+  async presentAlertWrongAnswer(){
+    const alert = await this.alertController.create({
+      header: "Respuesta incorrecta",
+      message: this.wrongAnswers[this.getRandomInt[0,3]].answer,
+      buttons: ["OK"]
+    });
+    await alert.present();
+    let result = await alert.onDidDismiss();
+    this.next();
+  }
+
+  async presentAlertHelp(){
+    const alert = await this.alertController.create({
+      header: "Ayuda",
+      message: this.heplAnswer,
+      buttons: ["OK"]
+    });
+    await alert.present();
+    let result = await alert.onDidDismiss();
+    this.next();
+  }
+
+
 
 }

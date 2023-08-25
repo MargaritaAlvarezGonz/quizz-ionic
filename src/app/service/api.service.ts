@@ -21,5 +21,14 @@ export class ApiService {
   // luego, vamos a hacer la petición a este servicio, el de getQuestions que creamos
   //y se hace desde la pagina del juego para obtener todas las preguntas
 
+  getWrongAnswers(){
+    return this.http.get('../../assets/files/wrongAnswers.json'). pipe(
+      map((res: any)=>{
+        return res.data;
+      }
+      )
+    )
+  }
+
 }
 
