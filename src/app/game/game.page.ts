@@ -37,10 +37,17 @@ export class GamePage implements OnInit {
 
     //aquí vamos a llamar a las preguntas cuando inicie la aplicacion
   ngOnInit() {
+
+  }
+
+  ionViewWillEnter(){
+    this.questionNumber = localStorage.getItem("questionNumber");
+    //le vamos a poner un codicionante7
+    if (!this.questionNumber){
+      this.questionNumber = 0;
+    }
     this.getQuestions();
     this.getWrongAnswers();
-    this.questionNumber = 0;
-
   }
 
 
@@ -72,6 +79,8 @@ export class GamePage implements OnInit {
 
   next(){
     this.questionNumber = ++this.questionNumber;
+    // vams a grabar en que pregunta se quedó el usuuario con el local Storage
+    localStorage.setItem("questionNumber", this.questionNumber)
     this.getQuestions();
   }
 
@@ -112,7 +121,7 @@ export class GamePage implements OnInit {
   async presentAlertWrongAnswer(){
     const alert = await this.alertController.create({
       header: "Respuesta incorrecta",
-      message: this.wrongAnswers[this.getRandomInt[0,3]].answer,
+      message: this.wrongAnswers[this.getRandomInt(0, 3)].answer,
       buttons: ["OK"]
     });
     await alert.present();
