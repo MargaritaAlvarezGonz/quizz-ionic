@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'quizz',
+  appId: 'com.quizzlogicfun.app',
+  appName: 'quizz logic fun',
   webDir: 'www',
   server: {
     androidScheme: 'https'

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup,  Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 
 
@@ -20,15 +21,19 @@ export class GamePage implements OnInit {
   questionAnswer: any;
   heplAnswer: any;
   //inicializamos en 0 las respuestas, pero necesitamos que vayan cambiando, por lo que vamos a hacer una variable que se llama questionNumber
+  message: any;
   questionNumber: any;
   formSendAnswer: FormGroup;
+  questionsLength: any;
+  questionsTotal: number =32;
 
 
    //El serviceApi se tiene que inicializar en el constructor y se importa
   constructor(
     private apiService: ApiService,
     public formBuilder: FormBuilder,
-    public alertController: AlertController
+    public alertController: AlertController,
+    private router: Router
   ) {
     this.formSendAnswer= this.formBuilder.group({
       answer: ["", Validators.required],
@@ -57,11 +62,15 @@ export class GamePage implements OnInit {
     this.apiService.getQuestions().subscribe(
       (res) => {
         this.questions = res; //nos trae
+        this.questionsLength = this.questionsTotal;
+        console.log("cantidad preguntas " , this.questionsLength)
         this.questiontitle = this.questions[this.questionNumber].question; //al titulo de las preguntas en nuestro json se llaman question
         this.questionAnswer = this.questions[this.questionNumber].answer;
         this.heplAnswer = this.questions[this.questionNumber].help;
       }, (err) => {
         console.log("error: ", err)
+        this.presentAlertWin();
+        this.router.navigate(["/home"]);
       }
     )
   }
@@ -78,10 +87,15 @@ export class GamePage implements OnInit {
   }
 
   next(){
-    this.questionNumber = ++this.questionNumber;
-    // vams a grabar en que pregunta se quedó el usuuario con el local Storage
-    localStorage.setItem("questionNumber", this.questionNumber)
-    this.getQuestions();
+    if(this.questionNumber < this.questionsLength){
+      this.questionNumber = ++this.questionNumber;
+      // vams a grabar en que pregunta se quedó el usuuario con el local Storage
+      localStorage.setItem("questionNumber", this.questionNumber)
+      this.getQuestions();
+    }else {
+      this.presentAlertWin();
+    }
+
   }
 
   help(){
@@ -119,14 +133,15 @@ export class GamePage implements OnInit {
   }
 
   async presentAlertWrongAnswer(){
+    var message = this.wrongAnswers[this.getRandomInt(0,14)].answer
     const alert = await this.alertController.create({
       header: "Respuesta incorrecta",
-      message: this.wrongAnswers[this.getRandomInt(0, 3)].answer,
-      buttons: ["OK"]
+      message: message,
+      buttons: ["OK"],
     });
     await alert.present();
     let result = await alert.onDidDismiss();
-    this.next();
+    console.log(result);
   }
 
   async presentAlertHelp(){
@@ -138,6 +153,18 @@ export class GamePage implements OnInit {
     await alert.present();
     let result = await alert.onDidDismiss();
     this.next();
+  }
+
+  async presentAlertWin() {
+    const alert = await this.alertController.create({
+      header: "¡Enhorabuena!",
+      message: "Has completado todos los niveles, pronto actualizaremos la app con más niveles. También puedes contribuir y ser parte del equipo aportando más preguntas",
+      buttons: ["OK"],
+    });
+    await alert.present();
+    let result = await alert.onDidDismiss();
+    console.log(result);
+    this.router.navigate(["/home"]) ;
   }
 
 

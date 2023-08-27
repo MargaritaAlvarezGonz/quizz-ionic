@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">quizz logic fun</string>
+    <string name="title_activity_main">quizz logic fun</string>
+    <string name="package_name">com.quizzlogicfun.app</string>
+    <string name="custom_url_scheme">com.quizzlogicfun.app</string>
+</resources>
