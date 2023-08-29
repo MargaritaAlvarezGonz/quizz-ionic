@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../service/api.service';
 import { FormBuilder, FormGroup,  Validators } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 
@@ -25,7 +23,7 @@ export class GamePage implements OnInit {
   questionNumber: any;
   formSendAnswer: FormGroup;
   questionsLength: any;
-  questionsTotal: number =32;
+  //questionsTotal: number =32;
 
 
    //El serviceApi se tiene que inicializar en el constructor y se importa
@@ -38,6 +36,7 @@ export class GamePage implements OnInit {
     this.formSendAnswer= this.formBuilder.group({
       answer: ["", Validators.required],
     });
+    //this.getWrongAnswers();
   }
 
     //aquí vamos a llamar a las preguntas cuando inicie la aplicacion
@@ -62,13 +61,17 @@ export class GamePage implements OnInit {
     this.apiService.getQuestions().subscribe(
       (res) => {
         this.questions = res; //nos trae
-        this.questionsLength = this.questionsTotal;
+        //this.questionsLength = this.questionsTotal;
+        this.questionsLength = this.questions.length - 1;
         console.log("cantidad preguntas " , this.questionsLength)
         this.questiontitle = this.questions[this.questionNumber].question; //al titulo de las preguntas en nuestro json se llaman question
         this.questionAnswer = this.questions[this.questionNumber].answer;
         this.heplAnswer = this.questions[this.questionNumber].help;
+        if(!this.questiontitle){
+          this.presentAlertWin();
+        }
       }, (err) => {
-        console.log("error: ", err)
+        console.log("error: ")
         this.presentAlertWin();
         this.router.navigate(["/home"]);
       }
@@ -79,11 +82,28 @@ export class GamePage implements OnInit {
     this.apiService.getWrongAnswers().subscribe(
       (res) => {
         this.wrongAnswers = res; //nos trae
-
       }, (err) => {
-        console.log("error: ", err)
+        console.log("error: ")
       }
     )
+  }
+
+  sendAnswer(){
+    let value = this.formSendAnswer.value;//con esto se tiene toda la información de formulario con el que enviamos
+    console.log("Respuesta enviada: ", value.answer)
+    if (value.answer ==  this.questionAnswer){
+
+      this.presentAlertCorrectAnswer();
+      this.formSendAnswer.reset()
+    } else {
+
+      this.presentAlertWrongAnswer();
+      this.formSendAnswer.reset()
+    }
+  }
+
+  help(){
+    this.presentAlertHelp();
   }
 
   next(){
@@ -95,13 +115,7 @@ export class GamePage implements OnInit {
     }else {
       this.presentAlertWin();
     }
-
   }
-
-  help(){
-    this.presentAlertHelp();
-  }
-
 
   getRandomInt(min, max){
     min = Math.ceil(min);
@@ -109,22 +123,10 @@ export class GamePage implements OnInit {
     return Math.floor(Math.random()*(max-min +1)) + min;
   }
 
-  sendAnswer(){
-    let value = this.formSendAnswer.value;//con esto se tiene toda la información de formulario con el que enviamos
-    console.log("Respuesta enviada: ", value)
-    if (value.answer ==  this.questionAnswer){
-
-      this.presentAlertCorrectAnswer();
-    } else {
-
-      this.presentAlertWrongAnswer();
-    }
-  }
-
    async presentAlertCorrectAnswer(){
     const alert = await this.alertController.create({
       header: "Respuesta correcta",
-      message: "Veremos que tal te va en la siguiente",
+      message: "Veremos que tal te va en la siguiente 😉",
       buttons: ["OK"]
     });
     await alert.present();
@@ -142,6 +144,7 @@ export class GamePage implements OnInit {
     await alert.present();
     let result = await alert.onDidDismiss();
     console.log(result);
+    this.next();
   }
 
   async presentAlertHelp(){
@@ -158,7 +161,7 @@ export class GamePage implements OnInit {
   async presentAlertWin() {
     const alert = await this.alertController.create({
       header: "¡Enhorabuena!",
-      message: "Has completado todos los niveles, pronto actualizaremos la app con más niveles. También puedes contribuir y ser parte del equipo aportando más preguntas",
+      message: "🥳🎉Has completado todas las preguntas a pesar del troleo que te hicimos si te equivocabas, pronto actualizaremos la app con más niveles.",
       buttons: ["OK"],
     });
     await alert.present();

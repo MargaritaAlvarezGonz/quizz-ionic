@@ -4,30 +4,30 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
+
+  <ion-header  collapse="condense">
+    <ion-toolbar class="question-number">
       <ion-title size="large">Pregunta {{questionNumber}}</ion-title>
     </ion-toolbar>
   </ion-header>
-</ion-content>
 
-<ion-content>
+
+<ion-content class="contenedor-preguntas">
   <ion-grid class="ion-text-center">
-    <ion-row>
+    <ion-row class="question-title">
         <ion-col size="12">
           <div class="question">
             {{questiontitle}}
           </div>
         </ion-col>
     </ion-row>
-    <form [formGroup] = "formSendAnswer" (ngSubmit)="sendAnswer()">
+    <form [formGroup] = "formSendAnswer" (ngSubmit)="sendAnswer()" class="setclsoutput">
     <ion-row>
       <ion-col size="6">
-        <ion-input placeholder="_" formControlName="answer" type="text">Respuesta</ion-input>
+        <ion-input class="input-font" placeholder="_" formControlName="answer" type="text">Respuesta</ion-input>
       </ion-col>
       <ion-col size="6">
-        <ion-button type="submit" color="secondary" size="large">Enviar</ion-button>
+        <ion-button type="submit" color="warning" size="large">Enviar</ion-button>
     </ion-col>
   </ion-row>
     </form>
@@ -38,18 +38,18 @@
 <! –– Ponemos iontoolbar porque los ion tabs no dejan meter otras funcionalidades y si hacemos eso, ya podemos poner otros botones activos ––>
 <ion-toolbar>
   <ion-tabs>
-    <ion-tab-bar slot="bottom">
-      <ion-tab-button>
-        <ion-icon name="home" [routerLink]="['/home']"></ion-icon>
+    <ion-tab-bar slot="bottom" >
+      <ion-tab-button class="tab-b">
+        <ion-icon class="icon-b" name="home" [routerLink]="['/home']"></ion-icon>
         <ion-label>Home</ion-label>
-      </ion-tab-button>
-      <ion-tab-button (click)="help()" >
-        <ion-icon name="help"></ion-icon>
+      </ion-tab-button >
+      <ion-tab-button class="tab-b"(click)="help()" >
+        <ion-icon class="icon-b" name="help"></ion-icon>
         <ion-label>Ayuda</ion-label>
       </ion-tab-button>
 
-      <ion-tab-button (click)="next()">
-        <ion-icon name="arrow-forward" ></ion-icon>
+      <ion-tab-button class="tab-b" (click)="next()">
+        <ion-icon class="icon-b" name="arrow-forward" ></ion-icon>
         <ion-label>Siguiente</ion-label>
       </ion-tab-button>
 
